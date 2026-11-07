@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b1014">
 <meta name="description" content="Midnight Chamber: un duello di fortuna per due giocatori, solo virtuale.">
+<link rel="preload" href="./assets/audio/revolver-shot.mp3" as="audio" type="audio/mpeg">
+<link rel="preload" href="./assets/audio/revolver-click.mp3" as="audio" type="audio/mpeg">
 <title>MIDNIGHT CHAMBER • Un duello di fortuna</title>
 <style>
 :root{color-scheme:dark;--bg:#090d11;--surface:#141a20;--surface2:#1c252c;--edge:#334149;--text:#f5efe2;--muted:#9faab1;--gold:#e6bf7a;--red:#ec7772;--blue:#76bdd0;--round:18px}
@@ -41,6 +43,16 @@ button:disabled{opacity:.5;cursor:not-allowed}.shell{max-width:1110px;margin:0 a
 @media(max-width:800px){.shell{padding:17px 13px 24px}.topbar{padding-bottom:17px}.heading{padding:24px 0 23px}.gamegrid{grid-template-columns:1fr 1fr;gap:11px}.arena{grid-row:1;grid-column:1 / -1;min-height:350px}.player{grid-row:2;padding:12px 9px}.portrait{height:125px}.portrait svg{height:124px}.wins{margin-top:9px}.revolver-wrap{min-height:165px;max-width:350px}.playername{font-size:18px}}
 @media(max-width:390px){.brand{font-size:10px;letter-spacing:.1em}.tinybtn{font-size:10px;padding:8px 10px}.heading h1{font-size:41px}.gamegrid{gap:8px}.arena{padding:15px 11px}.portrait{height:104px}.portrait svg{height:110px}.playername{font-size:16px}.minor{font-size:8px}.statusdot{font-size:8px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Polished weapon graphic & brief visual kickback */
+.revolver-wrap{max-width:485px;min-height:232px;filter:drop-shadow(0 25px 18px #000c)}
+.revolver-wrap:before{content:"";position:absolute;z-index:0;width:70%;height:55%;border-radius:50%;background:radial-gradient(ellipse,#b8cdc41a,transparent 70%);filter:blur(11px)}
+.revolver{position:relative;z-index:1;width:100%;max-width:445px;overflow:visible}
+.arena.bang .revolver{animation:premium-recoil .32s ease-out}
+@keyframes premium-recoil{0%{transform:none}18%{transform:translate(-8px,9px) rotate(-4deg)}55%{transform:translate(3px,-3px) rotate(1.3deg)}100%{transform:none}}
+@media(max-width:800px){.revolver-wrap{max-width:390px;min-height:185px}.revolver{max-width:385px}}
+@media(max-width:390px){.revolver-wrap{min-height:156px}}
+@media(prefers-reduced-motion:reduce){.arena.bang .revolver{animation:none}}
 </style>
 </head>
 <body>
@@ -49,7 +61,7 @@ button:disabled{opacity:.5;cursor:not-allowed}.shell{max-width:1110px;margin:0 a
     <div class="brand"><span class="brandmark">✳</span><span>AFTER DARK / GAMES</span></div>
     <div class="topbuttons">
       <button type="button" class="tinybtn" id="soundBtn" aria-pressed="true">♫ Suono: ON</button>
-      <button type="button" class="tinybtn" id="resetScore">Azzerra punteggi</button>
+      <button type="button" class="tinybtn" id="resetScore">Azzera punteggi</button>
     </div>
   </header>
 
@@ -84,28 +96,62 @@ button:disabled{opacity:.5;cursor:not-allowed}.shell{max-width:1110px;margin:0 a
       <div class="arena-tag">IL DESTINO DECIDE</div>
       <div class="counter" id="counter">TENTATIVO 01 / 06</div>
       <div class="revolver-wrap">
-        <svg class="revolver" viewBox="0 0 610 285" role="img" aria-label="Illustrazione di un revolver immaginario da videogioco">
-          <defs><linearGradient id="barrel" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e2e1cf"/><stop offset=".3" stop-color="#889ba3"/><stop offset=".7" stop-color="#526773"/><stop offset="1" stop-color="#384852"/></linearGradient></defs>
-          <path d="M363 81 L536 81 L551 93 L551 119 L362 121Z" fill="url(#barrel)" stroke="#27333b" stroke-width="5"/>
-          <path d="M384 90 L535 90" class="detail"/><rect x="528" y="92" width="24" height="17" rx="4" fill="#293943"/>
-          <path d="M321 66 Q333 44 357 48 L382 70 L381 145 L348 161 L325 146Z" class="metal"/>
-          <path d="M200 68 L246 63 L255 57 L326 62 L340 80 L344 149 L325 165 L238 166 L193 145Z" class="metal"/>
-          <path d="M205 88 Q176 72 169 52 Q181 44 195 51 L213 69" class="darkmetal"/>
-          <path d="M209 152 L236 157 L222 210 L199 259 Q176 269 161 251 L168 204Z" class="grip"/>
-          <path d="M178 218 L210 230 M174 234 L199 244" class="grain"/>
-          <path d="M238 158 Q254 169 254 190 Q252 207 233 216 L224 205 Q240 187 218 173Z" class="darkmetal"/>
-          <path d="M239 159 Q262 188 292 176 L299 158" fill="none" stroke="#667b82" stroke-width="9"/>
-          <g class="wheel" id="wheel">
-            <circle cx="285" cy="112" r="65" fill="#30424c" stroke="#b6c0bb" stroke-width="6"/>
-            <circle cx="285" cy="112" r="56" fill="#73838b" stroke="#263640" stroke-width="4"/>
-            <g class="chamber-dot"><circle cx="285" cy="75" r="13"/><circle cx="317" cy="94" r="13"/><circle cx="317" cy="132" r="13"/><circle cx="285" cy="150" r="13"/><circle cx="253" cy="132" r="13"/><circle cx="253" cy="94" r="13"/></g>
-            <circle cx="285" cy="75" r="6" class="chamber-inner"/><circle cx="317" cy="94" r="6" class="chamber-inner"/><circle cx="317" cy="132" r="6" class="chamber-inner"/><circle cx="285" cy="150" r="6" class="chamber-inner"/><circle cx="253" cy="132" r="6" class="chamber-inner"/><circle cx="253" cy="94" r="6" class="chamber-inner"/>
-            <circle cx="285" cy="112" r="10" fill="#b8b2a4" stroke="#34434c" stroke-width="4"/><circle cx="285" cy="112" r="3" fill="#29343d"/>
-          </g>
-          <path d="M340 79 L366 75 L373 146 L345 151" fill="none" stroke="#293941" stroke-width="8"/>
-          <path d="M193 124 L218 126" class="detail"/>
-          <g class="muzzleflash"><path d="M553 101 L575 71 L574 93 L604 89 L581 108 L602 125 L572 117 L570 142 L554 112Z" fill="#ffd17b" stroke="#f78656" stroke-width="3"/><circle cx="559" cy="103" r="11" fill="#fff6cf"/></g>
-        </svg>
+        <svg class="revolver" viewBox="0 0 610 285" role="img" aria-label="Revolver illustrato con metallo lucido e impugnatura in legno">
+<defs>
+  <linearGradient id="premium-barrel" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e6f0ee"/><stop offset=".14" stop-color="#bccad0"/><stop offset=".35" stop-color="#7b909c"/><stop offset=".53" stop-color="#2c424c"/><stop offset=".79" stop-color="#6c8390"/><stop offset="1" stop-color="#233640"/></linearGradient>
+  <linearGradient id="premium-frame" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e0e7e1"/><stop offset=".25" stop-color="#9fb3b9"/><stop offset=".62" stop-color="#4a606d"/><stop offset="1" stop-color="#263a44"/></linearGradient>
+  <linearGradient id="premium-wood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#bc875f"/><stop offset=".2" stop-color="#8b593c"/><stop offset=".65" stop-color="#603e30"/><stop offset=".85" stop-color="#a16b48"/><stop offset="1" stop-color="#301f1d"/></linearGradient>
+  <radialGradient id="premium-drum" cx=".34" cy=".23" r=".83"><stop stop-color="#e2e5d8"/><stop offset=".31" stop-color="#a4b4b8"/><stop offset=".7" stop-color="#627a85"/><stop offset="1" stop-color="#2c434f"/></radialGradient>
+</defs>
+<ellipse cx="344" cy="263" rx="210" ry="9" fill="#050b0e" opacity=".3"/>
+<!-- Walnut grip -->
+<path d="M192 147 C217 148 232 154 240 165 C236 195 221 232 206 257 Q191 277 171 259 Q156 250 162 228 L177 185 L175 162Z" fill="#1b272e" stroke="#142129" stroke-width="8"/>
+<path d="M190 154 L230 167 Q227 210 206 253 Q192 266 173 252 Q161 245 173 219 L182 164Z" fill="url(#premium-wood)" stroke="#31231d" stroke-width="5"/>
+<path d="M194 174 Q195 202 179 240 M209 183 Q205 215 190 251 M218 173 Q220 213 203 245" fill="none" stroke="#d7a172" stroke-width="2.3" opacity=".55"/>
+<path d="M185 191 Q182 209 174 230 M202 174 Q206 203 189 245" fill="none" stroke="#412920" stroke-width="2.7" opacity=".7"/>
+<circle cx="204" cy="179" r="10" fill="#402e28" stroke="#c7a67d" stroke-width="2"/><circle cx="204" cy="179" r="5.6" fill="#d8c298" stroke="#4d4238" stroke-width="1.6"/><path d="M200 177 L208 181" stroke="#604c3a" stroke-width="1.4"/>
+<!-- Trigger guard -->
+<path d="M220 148 Q235 182 263 172 Q284 168 306 161 Q289 213 253 213 Q228 211 220 179" fill="none" stroke="#182833" stroke-width="17" stroke-linecap="round"/>
+<path d="M223 151 Q239 185 266 177 Q289 172 302 164" fill="none" stroke="#afc0c1" stroke-width="5.5"/>
+<path d="M233 164 Q252 178 239 199" fill="none" stroke="#23343b" stroke-width="11" stroke-linecap="round"/>
+<path d="M233 166 Q248 181 240 196" fill="none" stroke="#b7c3be" stroke-width="3"/>
+<!-- Lower lug -->
+<path d="M350 114 L549 114 L556 122 L546 139 L373 146 L351 138Z" fill="#324a56" stroke="#20313b" stroke-width="4"/>
+<path d="M377 131 L543 128" stroke="#a9bbbd" stroke-width="2" opacity=".6"/>
+<!-- Blued steel barrel -->
+<path d="M354 75 L547 75 Q557 79 559 85 L559 116 L368 123 L343 111Z" fill="url(#premium-barrel)" stroke="#233640" stroke-width="5"/>
+<path d="M378 84 L545 84" stroke="#f0f0e0" stroke-width="2.5" opacity=".75"/>
+<path d="M380 114 L544 110" stroke="#19313b" stroke-width="5" opacity=".8"/>
+<path d="M546 80 L564 81 L567 116 L555 120 L551 80Z" fill="#506774" stroke="#1d2e38" stroke-width="4"/>
+<ellipse cx="567" cy="99" rx="5" ry="12" fill="#111e28" stroke="#9bb1b4" stroke-width="2.4"/>
+<path d="M543 79 L550 66 L563 66 L565 81" fill="#2d414c" stroke="#25333b" stroke-width="3"/><path d="M550 67 L562 67" stroke="#e7e9dc" stroke-width="2"/>
+<!-- Hammer -->
+<path d="M202 91 Q180 70 172 52 Q185 43 200 52 L222 74 L222 92Z" fill="#34434c" stroke="#21303a" stroke-width="4"/>
+<path d="M179 51 L198 56 M182 57 L201 62 M185 63 L205 68" stroke="#b2c0be" stroke-width="2" opacity=".6"/>
+<!-- Receiver frame -->
+<path d="M191 83 Q206 62 245 61 L262 55 L336 58 Q358 64 370 81 L380 139 Q358 160 330 165 L244 170 Q215 163 201 148 L185 116Z" fill="url(#premium-frame)" stroke="#21323b" stroke-width="6"/>
+<path d="M196 86 Q229 70 254 70 L330 70 Q353 78 363 95" fill="none" stroke="#f6f0df" stroke-width="3" opacity=".55"/>
+<path d="M197 142 Q217 154 242 157 L320 157" fill="none" stroke="#273944" stroke-width="5"/>
+<!-- Rotating drum -->
+<g class="wheel" id="wheel">
+  <circle cx="285" cy="112" r="69" fill="#20323c" stroke="#172a33" stroke-width="6"/>
+  <circle cx="285" cy="112" r="64" fill="#a8bec2" stroke="#e0e6db" stroke-width="3"/>
+  <circle cx="285" cy="112" r="58" fill="url(#premium-drum)" stroke="#364d57" stroke-width="4"/>
+  <circle cx="285" cy="112" r="49" fill="none" stroke="#e4e9df" stroke-width="2" opacity=".3"/>
+  <g fill="#25353e" stroke="#c5d2d0" stroke-width="2"><circle cx="285" cy="74" r="13"/><circle cx="318" cy="93" r="13"/><circle cx="318" cy="131" r="13"/><circle cx="285" cy="150" r="13"/><circle cx="252" cy="131" r="13"/><circle cx="252" cy="93" r="13"/></g>
+  <g fill="#101b22"><circle cx="285" cy="74" r="7"/><circle cx="318" cy="93" r="7"/><circle cx="318" cy="131" r="7"/><circle cx="285" cy="150" r="7"/><circle cx="252" cy="131" r="7"/><circle cx="252" cy="93" r="7"/></g>
+  <path d="M245 72 Q284 43 328 71" fill="none" stroke="#fff9e4" stroke-width="2" opacity=".45"/>
+  <circle cx="285" cy="112" r="13" fill="#c8c5b4" stroke="#3a505b" stroke-width="4"/><circle cx="285" cy="112" r="5" fill="#34454d" stroke="#e2d4b3" stroke-width="1.6"/>
+  <path d="M280 112 L290 112" stroke="#eedcb7" stroke-width="1.5"/>
+</g>
+<!-- Hinges, screws and etching -->
+<path d="M349 77 L370 81 L370 143 L351 153" fill="none" stroke="#2c404a" stroke-width="10"/>
+<path d="M352 81 L363 85 L363 142 L350 147" fill="none" stroke="#b7c7c5" stroke-width="2.5" opacity=".6"/>
+<circle cx="215" cy="135" r="5" fill="#d0cdb9" stroke="#425966" stroke-width="2"/><path d="M212 137 L218 133" stroke="#4f5551" stroke-width="1.5"/>
+<circle cx="338" cy="148" r="4" fill="#b9ccc8" stroke="#273d46" stroke-width="2"/>
+<text x="406" y="102" fill="#eee8d6" opacity=".72" font-family="Georgia,serif" letter-spacing="2" font-size="8">MIDNIGHT · VI</text>
+<g class="muzzleflash"><path d="M570 101 L591 72 L587 94 L606 84 L590 106 L605 125 L585 118 L579 141 L568 113Z" fill="#ffd28c" stroke="#ef7947" stroke-width="3"/><circle cx="570" cy="103" r="10" fill="#fff4d5"/></g>
+</svg>
       </div>
       <div class="result" id="result" aria-live="polite">CHI AVRÀ CORAGGIO?</div>
       <p class="message" id="message" aria-live="polite">Due rivali. Sei possibilità. Il prossimo turno potrebbe cambiare tutto.</p>
@@ -154,21 +200,19 @@ button:disabled{opacity:.5;cursor:not-allowed}.shell{max-width:1110px;margin:0 a
   var wins=[0,0],turn=0,shot=0,finish=false,busy=false,doom=0,token=0,rotation=0,audioOn=true,audioCtx=null,log=[];
   var fire=el("fire"),result=el("result"),message=el("message"),counter=el("counter"),wheel=el("wheel"),arena=el("arena");
   function player(i){return names[i].value.trim()||("Giocatore "+(i+1))}
+  var sfx = {
+    click: new Audio("./assets/audio/revolver-click.mp3"),
+    bang: new Audio("./assets/audio/revolver-shot.mp3")
+  };
+  Object.keys(sfx).forEach(function(key){ sfx[key].preload="auto"; sfx[key].load(); });
   function audio(which){
-    if(!audioOn)return;
-    try{
-      var C=window.AudioContext||window.webkitAudioContext;
-      if(!C)return;
-      if(!audioCtx)audioCtx=new C();
-      if(audioCtx.state==="suspended")audioCtx.resume();
-      var t=audioCtx.currentTime,osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
-      osc.type=which==="bang"?"sawtooth":"triangle";
-      osc.frequency.setValueAtTime(which==="bang"?180:610,t);
-      osc.frequency.exponentialRampToValueAtTime(which==="bang"?48:240,t+(which==="bang"?.30:.075));
-      gain.gain.setValueAtTime(which==="bang"?.23:.09,t);
-      gain.gain.exponentialRampToValueAtTime(.001,t+(which==="bang"?.37:.12));
-      osc.connect(gain);gain.connect(audioCtx.destination);osc.start(t);osc.stop(t+(which==="bang"?.39:.14));
-    }catch(e){}
+    if(!audioOn || !sfx[which]) return;
+    try {
+      var snd=sfx[which]; snd.pause(); snd.currentTime=0;
+      snd.volume=which==="bang" ? 0.95 : 0.82;
+      var playing=snd.play();
+      if(playing && playing.catch) playing.catch(function(){});
+    } catch(e) {}
   }
   function render(){
     for(var i=0;i<2;i++){
