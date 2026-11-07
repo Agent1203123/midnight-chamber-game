@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1014">
+<meta name="description" content="Midnight Chamber: un duello di fortuna per due giocatori, solo virtuale.">
+<title>MIDNIGHT CHAMBER • Un duello di fortuna</title>
+<style>
+:root{color-scheme:dark;--bg:#090d11;--surface:#141a20;--surface2:#1c252c;--edge:#334149;--text:#f5efe2;--muted:#9faab1;--gold:#e6bf7a;--red:#ec7772;--blue:#76bdd0;--round:18px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 50% -20%,#25323a 0%,transparent 55%),linear-gradient(#0c1115,#080b0e);overflow-x:hidden}
+body:before{content:"";pointer-events:none;position:fixed;inset:0;opacity:.11;background-image:linear-gradient(90deg,#a9a3a0 1px,transparent 1px),linear-gradient(#a9a3a0 1px,transparent 1px);background-size:45px 45px;mask-image:linear-gradient(to bottom,#000,transparent 75%)}
+button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #92d7fa;outline-offset:3px}
+button:disabled{opacity:.5;cursor:not-allowed}.shell{max-width:1110px;margin:0 auto;padding:26px 22px 32px;position:relative}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:24px;border-bottom:1px solid #39444a}.brand{display:flex;align-items:center;gap:11px;font-size:11px;letter-spacing:.24em;font-weight:800;color:var(--gold)}.brandmark{width:31px;height:31px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;font-size:20px}
+.topbuttons{display:flex;gap:9px;flex-wrap:wrap}.tinybtn{color:#d5d9d9;background:#182127;border:1px solid #37454b;border-radius:999px;padding:9px 13px;font-size:12px;white-space:nowrap}.tinybtn:hover{background:#263139}
+.heading{text-align:center;padding:28px 0 25px}.eyebrow{font-size:10px;font-weight:750;letter-spacing:.4em;color:var(--gold);margin:0 0 9px}.heading h1{margin:0;color:#f6e9d4;font-size:clamp(41px,7.8vw,86px);line-height:1;letter-spacing:-.065em;font-family:Georgia,"Times New Roman",serif;font-weight:700;text-shadow:0 7px 35px #000a}.heading h1 span{color:var(--gold)}.subtitle{color:#a7b2b9;font-size:13px;letter-spacing:.1em;margin:13px auto 0}
+.gamegrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.36fr) minmax(0,1fr);gap:13px;align-items:stretch}
+.player{background:linear-gradient(145deg,#1a252d,#11171b);border:1px solid #3b4951;border-radius:var(--round);min-width:0;overflow:hidden;padding:17px 15px 16px;position:relative;transition:border-color .25s,box-shadow .25s,transform .25s}
+.player.active{border-color:var(--gold);box-shadow:inset 0 0 0 1px #ba8f514d,0 0 34px #d7ad5320;transform:translateY(-3px)}.player.out{filter:saturate(.45);opacity:.67}
+.player-top{display:flex;justify-content:space-between;align-items:center;gap:6px}.minor{color:#8696a1;letter-spacing:.15em;font-size:9px;font-weight:800}.statusdot{background:#243036;padding:5px 8px;border:1px solid #3b4b51;border-radius:30px;font-size:9px;font-weight:800;letter-spacing:.08em;color:#98abb4}.player.active .statusdot{color:#fff2d4;background:#65502e;border-color:#a48858}
+.portrait{height:176px;position:relative;display:flex;align-items:end;justify-content:center;margin:12px 0;border-radius:12px;overflow:hidden;background:radial-gradient(circle at 50% 40%,#325361,#17262f 58%,#0b141a);border:1px solid #40505a}
+#card2 .portrait{background:radial-gradient(circle at 50% 40%,#604739,#2e211f 60%,#151518);border-color:#5e4740}
+.portrait svg{height:170px;width:min(100%,178px);display:block;filter:drop-shadow(0 10px 20px #0008)}.portrait:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 26px #0008;pointer-events:none}
+.playername{display:block;width:100%;border:0;border-bottom:1px solid #3e4c52;border-radius:0;background:none;padding:9px 2px;font-family:Georgia,serif;font-weight:700;font-size:clamp(16px,2vw,21px);color:var(--text);text-align:center;min-width:0}.playername:focus{background:#203039}
+.player .smalltxt{text-align:center;color:#8c9ca5;font-size:11px;margin-top:7px}.wins{margin-top:16px;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px;border-top:1px solid #344149;color:#b8c2c6;font-size:12px}.wins strong{color:var(--gold);font-size:22px;font-family:Georgia,serif}
+.arena{min-width:0;border-radius:var(--round);border:1px solid #495457;background:radial-gradient(ellipse at 50% 30%,#29363b,#171e23 65%,#10161a);position:relative;overflow:hidden;padding:18px 16px 20px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.arena:before{content:"";position:absolute;top:-110px;width:380px;height:200px;border-radius:50%;border:1px solid #c9b17d25;box-shadow:0 0 0 30px #d9b47c08,0 0 0 75px #d9b47c06;pointer-events:none}
+.arena-tag{z-index:1;color:#c9b789;letter-spacing:.24em;font-size:10px;font-weight:750}.counter{z-index:1;margin-top:7px;font:15px Georgia,serif;color:#a8b1b3}
+.revolver-wrap{width:100%;position:relative;max-width:430px;min-height:200px;display:grid;place-items:center;filter:drop-shadow(0 24px 19px #000b)}
+.revolver{width:100%;max-width:405px;overflow:visible}.metal{fill:#9aadb6;stroke:#2f3b43;stroke-width:4}.metal2{fill:#677984;stroke:#293640;stroke-width:4}.darkmetal{fill:#3c4b55;stroke:#1a252b;stroke-width:4}.grip{fill:#684837;stroke:#241c1a;stroke-width:5}.grain{stroke:#b18c65;stroke-width:2.5;opacity:.65;fill:none}.detail{fill:none;stroke:#d7e0dc;stroke-width:3;opacity:.6}.wheel{transform-origin:285px 112px;transform-box:view-box;transition:transform .9s cubic-bezier(.2,.75,.2,1)}.chamber-dot{fill:#1d2930;stroke:#c1c5bb;stroke-width:2}.chamber-inner{fill:#0e161d}.muzzleflash{opacity:0;transform-origin:545px 105px}.arena.bang .muzzleflash{animation:flash .6s ease-out forwards}.arena.bang{animation:arenaFlash .7s ease-out}
+@keyframes flash{0%{opacity:1;transform:scale(.5)}25%{opacity:1;transform:scale(1.2)}100%{opacity:0;transform:scale(.85)}}@keyframes arenaFlash{0%,100%{box-shadow:none}22%{box-shadow:inset 0 0 120px #f36d5480}}
+.result{position:relative;z-index:2;font-size:clamp(22px,3.5vw,35px);line-height:1.1;min-height:45px;font-family:Georgia,serif;color:#fff2d4;font-weight:bold;margin-top:-4px}
+.result.safe{color:#b9d9de}.result.danger{color:#ff9d83}.message{color:#b4bfc2;font-size:12px;min-height:37px;line-height:1.4;margin:7px 0 15px;max-width:285px}
+.firebtn{width:100%;max-width:300px;background:linear-gradient(180deg,#eac888,#bc8b47);color:#14191c;border:1px solid #f4daa6;border-bottom:4px solid #8b6032;border-radius:13px;padding:15px 12px;font-size:13px;font-weight:900;letter-spacing:.13em;box-shadow:0 7px 22px #0007;transition:filter .2s,transform .2s}
+.firebtn:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-2px)}.firebtn:active:not(:disabled){transform:translateY(2px);border-bottom-width:1px}.firebtn:disabled{opacity:.52}.hint{margin-top:12px;color:#7e909a;font-size:10px;letter-spacing:.05em}
+.footerbox{margin-top:14px;border:1px solid #303c42;background:#11181c;border-radius:14px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;padding:14px 17px}
+.livepill{display:flex;align-items:center;gap:8px;color:#d0cfbc;font-size:11px;font-weight:750;letter-spacing:.08em}.blip{width:7px;height:7px;background:#a0d3b9;border-radius:50%;box-shadow:0 0 0 3px #a0d3b922}
+.history{color:#a5b2b8;font-size:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}.tick{border:1px solid #3c4b52;background:#182228;padding:5px 8px;border-radius:8px;color:#cbd8db}.tick.bang{background:#502c2a;border-color:#945049;color:#ffb8a9}
+.disclaimer{font-size:11px;color:#788b93;margin:18px 0 0;text-align:center;line-height:1.6}.disclaimer strong{color:#bbc9cf;font-weight:600}
+@media(max-width:800px){.shell{padding:17px 13px 24px}.topbar{padding-bottom:17px}.heading{padding:24px 0 23px}.gamegrid{grid-template-columns:1fr 1fr;gap:11px}.arena{grid-row:1;grid-column:1 / -1;min-height:350px}.player{grid-row:2;padding:12px 9px}.portrait{height:125px}.portrait svg{height:124px}.wins{margin-top:9px}.revolver-wrap{min-height:165px;max-width:350px}.playername{font-size:18px}}
+@media(max-width:390px){.brand{font-size:10px;letter-spacing:.1em}.tinybtn{font-size:10px;padding:8px 10px}.heading h1{font-size:41px}.gamegrid{gap:8px}.arena{padding:15px 11px}.portrait{height:104px}.portrait svg{height:110px}.playername{font-size:16px}.minor{font-size:8px}.statusdot{font-size:8px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main class="shell" id="game">
+  <header class="topbar">
+    <div class="brand"><span class="brandmark">✳</span><span>AFTER DARK / GAMES</span></div>
+    <div class="topbuttons">
+      <button type="button" class="tinybtn" id="soundBtn" aria-pressed="true">♫ Suono: ON</button>
+      <button type="button" class="tinybtn" id="resetScore">Azzerra punteggi</button>
+    </div>
+  </header>
+
+  <section class="heading" aria-label="Titolo del gioco">
+    <p class="eyebrow">DUE GIOCATORI · UNA SOLA FORTUNA</p>
+    <h1>MIDNIGHT <span>CHAMBER</span></h1>
+    <p class="subtitle">UN DUELLO DI NERVI. SOLO VIRTUALE.</p>
+  </section>
+
+  <section class="gamegrid" aria-label="Campo di gioco">
+    <article class="player active" id="card1">
+      <div class="player-top"><span class="minor">GIOCATORE / 01</span><span class="statusdot" id="s1">IL TUO TURNO</span></div>
+      <div class="portrait">
+        <svg role="img" aria-label="Ritratto stilizzato del primo giocatore" viewBox="0 0 180 175">
+          <ellipse cx="90" cy="169" rx="79" ry="34" fill="#122c38"/>
+          <path d="M21 173 Q26 122 66 123 L113 123 Q155 126 159 173 Z" fill="#2c4f60"/>
+          <path d="M69 122 L77 106 L104 106 L113 124 L90 151 Z" fill="#c48668"/>
+          <path d="M58 68 Q53 27 91 26 Q134 29 124 76 L118 103 Q108 120 90 120 Q71 115 64 96Z" fill="#d7a17b"/>
+          <path d="M61 83 Q45 66 55 43 Q59 11 93 16 Q129 14 132 50 L121 73 L118 51 L74 53 L63 78Z" fill="#171e26"/>
+          <path d="M64 46 Q84 38 103 37 Q120 38 126 29" fill="none" stroke="#28313b" stroke-width="13"/>
+          <path d="M74 82 L83 81 M100 81 L110 82" stroke="#322e32" stroke-width="4" stroke-linecap="round"/>
+          <path d="M81 103 Q91 107 101 102" fill="none" stroke="#915c51" stroke-width="3"/>
+          <path d="M68 125 L90 149 L111 124" stroke="#b4c5cc" stroke-width="4" fill="none"/>
+        </svg>
+      </div>
+      <label><input maxlength="18" autocomplete="off" class="playername" id="name1" aria-label="Nome giocatore uno" value="Il temerario"></label>
+      <div class="smalltxt">Modifica il nome qui sopra</div>
+      <div class="wins">VITTORIE <strong id="win1">0</strong></div>
+    </article>
+
+    <section class="arena" id="arena" aria-label="Revolver virtuale e comandi">
+      <div class="arena-tag">IL DESTINO DECIDE</div>
+      <div class="counter" id="counter">TENTATIVO 01 / 06</div>
+      <div class="revolver-wrap">
+        <svg class="revolver" viewBox="0 0 610 285" role="img" aria-label="Illustrazione di un revolver immaginario da videogioco">
+          <defs><linearGradient id="barrel" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e2e1cf"/><stop offset=".3" stop-color="#889ba3"/><stop offset=".7" stop-color="#526773"/><stop offset="1" stop-color="#384852"/></linearGradient></defs>
+          <path d="M363 81 L536 81 L551 93 L551 119 L362 121Z" fill="url(#barrel)" stroke="#27333b" stroke-width="5"/>
+          <path d="M384 90 L535 90" class="detail"/><rect x="528" y="92" width="24" height="17" rx="4" fill="#293943"/>
+          <path d="M321 66 Q333 44 357 48 L382 70 L381 145 L348 161 L325 146Z" class="metal"/>
+          <path d="M200 68 L246 63 L255 57 L326 62 L340 80 L344 149 L325 165 L238 166 L193 145Z" class="metal"/>
+          <path d="M205 88 Q176 72 169 52 Q181 44 195 51 L213 69" class="darkmetal"/>
+          <path d="M209 152 L236 157 L222 210 L199 259 Q176 269 161 251 L168 204Z" class="grip"/>
+          <path d="M178 218 L210 230 M174 234 L199 244" class="grain"/>
+          <path d="M238 158 Q254 169 254 190 Q252 207 233 216 L224 205 Q240 187 218 173Z" class="darkmetal"/>
+          <path d="M239 159 Q262 188 292 176 L299 158" fill="none" stroke="#667b82" stroke-width="9"/>
+          <g class="wheel" id="wheel">
+            <circle cx="285" cy="112" r="65" fill="#30424c" stroke="#b6c0bb" stroke-width="6"/>
+            <circle cx="285" cy="112" r="56" fill="#73838b" stroke="#263640" stroke-width="4"/>
+            <g class="chamber-dot"><circle cx="285" cy="75" r="13"/><circle cx="317" cy="94" r="13"/><circle cx="317" cy="132" r="13"/><circle cx="285" cy="150" r="13"/><circle cx="253" cy="132" r="13"/><circle cx="253" cy="94" r="13"/></g>
+            <circle cx="285" cy="75" r="6" class="chamber-inner"/><circle cx="317" cy="94" r="6" class="chamber-inner"/><circle cx="317" cy="132" r="6" class="chamber-inner"/><circle cx="285" cy="150" r="6" class="chamber-inner"/><circle cx="253" cy="132" r="6" class="chamber-inner"/><circle cx="253" cy="94" r="6" class="chamber-inner"/>
+            <circle cx="285" cy="112" r="10" fill="#b8b2a4" stroke="#34434c" stroke-width="4"/><circle cx="285" cy="112" r="3" fill="#29343d"/>
+          </g>
+          <path d="M340 79 L366 75 L373 146 L345 151" fill="none" stroke="#293941" stroke-width="8"/>
+          <path d="M193 124 L218 126" class="detail"/>
+          <g class="muzzleflash"><path d="M553 101 L575 71 L574 93 L604 89 L581 108 L602 125 L572 117 L570 142 L554 112Z" fill="#ffd17b" stroke="#f78656" stroke-width="3"/><circle cx="559" cy="103" r="11" fill="#fff6cf"/></g>
+        </svg>
+      </div>
+      <div class="result" id="result" aria-live="polite">CHI AVRÀ CORAGGIO?</div>
+      <p class="message" id="message" aria-live="polite">Due rivali. Sei possibilità. Il prossimo turno potrebbe cambiare tutto.</p>
+      <button type="button" class="firebtn" id="fire">PREMI IL GRILLETTO →</button>
+      <div class="hint" id="hint">GIOCATORE 1 INIZIA · UN CLIC PER TURNO</div>
+    </section>
+
+    <article class="player" id="card2">
+      <div class="player-top"><span class="minor">GIOCATORE / 02</span><span class="statusdot" id="s2">IN ATTESA</span></div>
+      <div class="portrait">
+        <svg role="img" aria-label="Ritratto stilizzato del secondo giocatore" viewBox="0 0 180 175">
+          <ellipse cx="90" cy="169" rx="77" ry="34" fill="#392626"/>
+          <path d="M18 173 Q22 123 64 119 L115 119 Q158 123 164 173 Z" fill="#694b43"/>
+          <path d="M73 122 L77 108 L105 108 L109 121 L91 148 Z" fill="#ab7059"/>
+          <path d="M57 71 Q57 31 92 29 Q128 31 126 73 L120 100 Q112 120 92 121 Q74 116 64 97Z" fill="#c68d6e"/>
+          <path d="M60 80 Q48 38 77 24 Q105 12 129 42 Q140 51 122 76 L118 56 Q95 65 75 53 Z" fill="#2f2424"/>
+          <path d="M68 47 Q92 57 124 42" stroke="#413333" stroke-width="11" fill="none"/>
+          <path d="M75 82 L85 80 M101 80 L111 82" stroke="#32292c" stroke-width="4" stroke-linecap="round"/>
+          <path d="M80 102 Q92 108 103 101" stroke="#885249" stroke-width="3" fill="none"/>
+          <path d="M91 148 L83 167 L101 167Z" fill="#271f24"/>
+          <path d="M64 122 L91 151 L116 122" stroke="#ab8777" stroke-width="4" fill="none"/>
+        </svg>
+      </div>
+      <label><input maxlength="18" autocomplete="off" class="playername" id="name2" aria-label="Nome giocatore due" value="Lo sfidante"></label>
+      <div class="smalltxt">Modifica il nome qui sopra</div>
+      <div class="wins">VITTORIE <strong id="win2">0</strong></div>
+    </article>
+  </section>
+
+  <section class="footerbox" aria-label="Registro della partita">
+    <div class="livepill"><span class="blip"></span><span id="phase">PARTITA IN CORSO</span></div>
+    <div class="history" id="history"><span>NESSUN TENTATIVO ANCORA</span></div>
+    <button type="button" class="tinybtn" id="newGame">↻ Nuova partita</button>
+  </section>
+  <p class="disclaimer">🎮 <strong>Un gioco di pura finzione.</strong> La grafica, il meccanismo e gli esiti sono virtuali. Non imitare mai queste azioni nella realtà.</p>
+</main>
+<script>
+(function(){
+  "use strict";
+  var root=document.getElementById("game");
+  if(root.dataset.initialized)return;root.dataset.initialized="true";
+  var el=function(id){return root.querySelector("#"+id)};
+  var card=[el("card1"),el("card2")];
+  var statuses=[el("s1"),el("s2")];
+  var names=[el("name1"),el("name2")];
+  var wins=[0,0],turn=0,shot=0,finish=false,busy=false,doom=0,token=0,rotation=0,audioOn=true,audioCtx=null,log=[];
+  var fire=el("fire"),result=el("result"),message=el("message"),counter=el("counter"),wheel=el("wheel"),arena=el("arena");
+  function player(i){return names[i].value.trim()||("Giocatore "+(i+1))}
+  function audio(which){
+    if(!audioOn)return;
+    try{
+      var C=window.AudioContext||window.webkitAudioContext;
+      if(!C)return;
+      if(!audioCtx)audioCtx=new C();
+      if(audioCtx.state==="suspended")audioCtx.resume();
+      var t=audioCtx.currentTime,osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+      osc.type=which==="bang"?"sawtooth":"triangle";
+      osc.frequency.setValueAtTime(which==="bang"?180:610,t);
+      osc.frequency.exponentialRampToValueAtTime(which==="bang"?48:240,t+(which==="bang"?.30:.075));
+      gain.gain.setValueAtTime(which==="bang"?.23:.09,t);
+      gain.gain.exponentialRampToValueAtTime(.001,t+(which==="bang"?.37:.12));
+      osc.connect(gain);gain.connect(audioCtx.destination);osc.start(t);osc.stop(t+(which==="bang"?.39:.14));
+    }catch(e){}
+  }
+  function render(){
+    for(var i=0;i<2;i++){
+      card[i].classList.toggle("active",!finish&&!busy&&turn===i);
+      card[i].classList.toggle("out",finish&&turn===i);
+      statuses[i].textContent=finish?(turn===i?"ELIMINATO":"VINCITORE"):(busy&&turn===i?"IL CILINDRO GIRA":turn===i?"IL TUO TURNO":"IN ATTESA");
+      el("win"+(i+1)).textContent=wins[i];
+    }
+    counter.textContent="TENTATIVO "+String(Math.min(shot+1,6)).padStart(2,"0")+" / 06";
+    if(finish){fire.textContent="↻ GIOCA ANCORA";fire.disabled=false;el("phase").textContent="PARTITA CONCLUSA";}
+    else{fire.textContent="PREMI IL GRILLETTO →";fire.disabled=busy;el("phase").textContent=busy?"IL DESTINO STA DECIDENDO":"PARTITA IN CORSO";}
+    el("hint").textContent=finish?"PREMI PER UNA RIVINCITA":busy?"ATTENDI L'ESITO...":"È IL TURNO DI "+player(turn).toUpperCase();
+    var h=el("history");h.textContent="";
+    if(log.length===0){var empty=document.createElement("span");empty.textContent="NESSUN TENTATIVO ANCORA";h.appendChild(empty)}
+    log.forEach(function(entry){var tick=document.createElement("span");tick.className="tick"+(entry.bang?" bang":"");tick.textContent=entry.name+": "+(entry.bang?"BANG!":"CLICK");h.appendChild(tick)});
+  }
+  function fresh(){
+    token++;shot=0;turn=0;doom=Math.floor(Math.random()*6);finish=false;busy=false;log=[];rotation=0;
+    wheel.style.transform="rotate(0deg)";arena.classList.remove("bang");
+    result.className="result";result.textContent="CHI AVRÀ CORAGGIO?";
+    message.textContent="Due rivali. Sei possibilità. Il prossimo turno potrebbe cambiare tutto.";
+    render();
+  }
+  function pull(){
+    if(busy)return;
+    if(finish){fresh();return}
+    busy=true;var ticket=++token,who=turn;
+    arena.classList.remove("bang");
+    result.className="result";result.textContent="IL CILINDRO GIRA...";
+    message.textContent=player(who)+" sfida la fortuna.";
+    rotation+=720+60*(shot+1);
+    wheel.style.transform="rotate("+rotation+"deg)";
+    render();
+    setTimeout(function(){
+      if(ticket!==token)return;
+      var isBang=shot===doom;
+      log.push({name:player(who),bang:isBang});
+      if(isBang){
+        audio("bang");finish=true;arena.classList.add("bang");wins[1-who]++;
+        result.textContent="BANG!";
+        result.className="result danger";
+        message.textContent=player(who)+" è eliminato. "+player(1-who)+" vince il duello!";
+        busy=false;
+      }else{
+        audio("click");result.textContent="CLICK. A VUOTO.";
+        result.className="result safe";
+        message.textContent=player(who)+" è salvo. Tocca all'avversario.";
+        shot++;busy=true;
+      }
+      render();
+      if(!isBang){
+        setTimeout(function(){
+          if(ticket!==token)return;
+          turn=1-who;busy=false;
+          render();
+        },850);
+      }
+    },900);
+  }
+  fire.addEventListener("click",pull);
+  el("newGame").addEventListener("click",fresh);
+  el("resetScore").addEventListener("click",function(){wins=[0,0];fresh()});
+  el("soundBtn").addEventListener("click",function(){
+    audioOn=!audioOn;this.textContent=audioOn?"♫ Suono: ON":"♪ Suono: OFF";this.setAttribute("aria-pressed",String(audioOn));
+  });
+  names.forEach(function(inp){inp.addEventListener("input",render)});
+  root.addEventListener("keydown",function(e){
+    if(e.code!=="Space"||e.repeat||e.target.matches("input,textarea,button,select"))return;
+    e.preventDefault();pull();
+  });
+  fresh();
+})();
+</script>
+</body>
+</html>
